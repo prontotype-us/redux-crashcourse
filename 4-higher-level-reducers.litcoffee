@@ -36,14 +36,14 @@ Is there a better way? Always. We can create a counter reducer "factory", a high
                 return state - amount
         return state # Fallback
 
-This is a function that returns a reducer function in the standard shape. The `counter_name` argument will be used to namespace the actions and avoid collisions. Now we can easily add counter reducers as the client gets ever more feature-hungry.
+This is a function that returns a reducer function in the standard shape. The `counter_name` argument will be used as a prefix to namespace the actions and thus avoid collisions. Now we can easily add counter reducers as the client gets ever more feature-hungry.
 
     {combineReducers} = require 'redux'
 
     counter1_reducer = create_counter_reducer 'counter1'
     counter2_reducer = create_counter_reducer 'counter2'
 
-    reducer = combineReducers {
+    combined_reducer = combineReducers {
         counter1: counter1_reducer
         counter2: counter2_reducer
     }
@@ -55,10 +55,14 @@ This is a function that returns a reducer function in the standard shape. The `c
     console.log 'initial state =', state
     # initial state = { counter1: 5, counter2: 10 }
 
-    state = reducer(state, {type: 'counter1.inc'})
+    state = combined_reducer(state, {type: 'counter1.inc'})
     console.log 'state =', state
     # state = { counter1: 6, counter2: 10 }
 
+## Creating a higher-level collection reducer
 
 
-**Next:** [](4-.litcoffee)
+
+---
+
+**Next:** [](5-.litcoffee)

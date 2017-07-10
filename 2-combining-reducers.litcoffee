@@ -56,8 +56,10 @@ And as usual we call the reducer with a state and an action to get an updated st
     # state = { counter: 2,
     #   user: { name: 'Josh', username: 'omgimjosh', age: 22 } }
 
-What happens when we run this combined reducer is the action is passed through *every reducer*. This means we could do some tricky things with actions that match multiple reducers, but more likely means we should be careful with the names of our actions. Overly simple names like `inc` and `set` will easily collide as the application becomes more complex. We'll look at ways to avoid this, while avoiding some boilerplate of common reducer actions, in the next episode.
+What happens when we run this combined reducer is the action is passed through *every reducer*. This means we could do some tricky things with actions that match multiple reducers, but more likely means we should be careful with the names of our actions. Overly simple names like `inc` and `set` will easily collide as the application becomes more complex. We'll look at ways to avoid this, while avoiding some boilerplate of common reducer actions, in an upcoming episode.
+
+But first we'll look into creating a reducer for the most common shape of web application data: a collection of items.
 
 ---
 
-**Next:** [Higher-level Reducers](3-higher-level-reducers.litcoffee)
+**Next:** [Building a Collection Reducer](3-collection-reducer.litcoffee)
