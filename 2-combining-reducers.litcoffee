@@ -18,8 +18,6 @@ We will borrow two reducers from the last segment, with one important distinctio
                 return state + amount
             when 'dec'
                 return state - amount
-            when 'reset'
-                return 0
         return state # Fallback
 
     user_reducer = (state={}, action) ->
