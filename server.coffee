@@ -1,6 +1,8 @@
 polar = require 'polar'
 
-app = polar port: 4337
+app = polar port: 4337, metaserve:
+    compilers:
+        js: require 'metaserve-js-litcoffee-reactify'
 
 app.get '/:path', (req, res, next) ->
     {path} = req.params
