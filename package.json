@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "immutability-helper": "^2.2.3",
+    "polar": "^0.3.1",
+    "preact": "^8.2.0",
     "redux": "^3.7.1"
   }
 }
