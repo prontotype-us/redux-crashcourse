@@ -1,5 +1,7 @@
 # # 6. Basic Usage with React
 
+# To view the final result, run server.coffee and navigate to http://localhost:4337/6-basic-react
+
 # *Note*: Because of metaserve inconveniences, the rest of the tutorials are in non-literate CoffeeScript.
 
 # Redux manages state, and that is its only goal. Similarly, React manages views, and that is, or should be, its only goal. Unfortunately state management often creeps into deep corners of a React app, state and views meld into an inseperable tangle, and responsibility diffuses into a bloody mist.
