@@ -1,6 +1,5 @@
 # 7. Working with Normalized Collections
 
-
 The official Redux docs [suggest normalizing all related objects](http://redux.js.org/docs/recipes/reducers/NormalizingStateShape.html) into flat ID-referenced collections. This simplifies collection reducers and prevents data duplication.
 
 Consider a task app with comments on tasks. When adding a comment to a task, in the un-normalized case, you might consider using the `update` actions seen before &mdash; immutability-helper would make a `$push` on `task.comments` easy enough. However this would be building complexity directly into the actions. Plus a specific nested data model might make it harder to use the comments directly, to add something like a "recent comments" sidebar later. A regular `create` action on a comments collection is conceptually simple and flexible &mdash; especially when considering data coming from external sources like a websocket.
