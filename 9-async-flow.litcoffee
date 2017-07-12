@@ -79,6 +79,8 @@ To fit the loading state in there's a slight departure from previous collections
 
 In order to support subscriptions to the actions themselves (rather than just resulting state changes, as `store.subscribe` offers) we'll create a Kefir stream called `actions$` to pass actions through. A middleware function will be added to the Store to emit an action on that stream whenever `store.dispatch(action)` is called.
 
+Middleware makes it possible to alter actions as they come through, but in this case it only hands the action to the `actions$` stream, and passes through with `next` (similar to Express middleware).
+
     actions$ = KefirBus()
 
     actions$_middleware = -> (next) -> (action) ->
@@ -90,20 +92,18 @@ In order to support subscriptions to the actions themselves (rather than just re
 Now with a stream of actions always available, we can trigger side effects when certain actions occur. For example, we'll have a reload button to reload the tweets. That button will dispatch the `tweets.load` action, but all that does is set the collection's loading state. The actual fetch will be triggered by a response to this action:
 
     actions$
-        .filter (action) ->
-            action.type == 'tweets.load'
-        .onValue ->
-            loadTweets(true).onValue (tweets) ->
-                store.dispatch {type: 'tweets.loaded', items: tweets}
+        .filter (action) -> action.type == 'tweets.load'
+        .flatMap loadTweets.bind(null, true)
+        .onValue (tweets) ->
+            store.dispatch {type: 'tweets.loaded', items: tweets}
 
 Similarly, when loading more tweets we'll trigger the `load_more` action and `loaded_more` after:
 
     actions$
-        .filter (action) ->
-            action.type == 'tweets.load_more'
-        .onValue ->
-            loadTweets().onValue (tweets) ->
-                store.dispatch {type: 'tweets.loaded_more', items: tweets}
+        .filter (action) -> action.type == 'tweets.load_more'
+        .flatMap loadTweets.bind(null, false)
+        .onValue (tweets) ->
+            store.dispatch {type: 'tweets.loaded_more', items: tweets}
 
 ## Initial load
 
