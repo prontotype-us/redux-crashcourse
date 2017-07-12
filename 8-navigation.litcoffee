@@ -59,7 +59,7 @@ Note that the initial navigation state here is just to demonstrate the shape, th
                 name: "Joe Jones"
                 following: ['terrence']
 
-We will use three reducer factories. The first two are familiar:
+We will use two reducer factories. The first is the familiar (simplified) collection reducer:
 
     nextId = (ids) ->
         if ids.length
@@ -75,12 +75,6 @@ We will use three reducer factories. The first two are familiar:
                 created = {}
                 created[item[id_key]] = item
                 return Object.assign {}, state, created
-        return state
-
-    create_object_reducer = (object_name) -> (state={}, action) ->
-        switch action.type
-            when "#{object_name}.update"
-                return Object.assign {}, state, action.value
         return state
 
 The last reducer is a special case to handle navigation. This reducer will match the path string given known routes, and extract `params`. The final matching `route` and `params` are used to set `state.navigation`.
@@ -289,4 +283,3 @@ The App component determines which pages and tabs to show from `navigation.route
 ---
 
 **Next:** [Async Data Flow](9-async-flow.litcoffee)
-
