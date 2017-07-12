@@ -262,7 +262,7 @@ The App component determines which pages and tabs to show from `navigation.route
                 @setState store.getState()
 
         render: ->
-            <div className='app'>
+            <div id='app'>
                 {if @state.navigation.route.page == 'home'
                     <HomePage {...@state} />
                 else if @state.navigation.route.page == 'profile'
