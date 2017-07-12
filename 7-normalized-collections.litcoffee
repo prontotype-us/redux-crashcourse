@@ -77,7 +77,7 @@ The initial state gives a good picture of the app's shape, with flat collections
         new_comment:
             body: ''
 
-We will use two reducer factories &mdash; the first is for managing a collection of items, with only a `create` action:
+We will use two reducer factories. The first is for managing a collection of items, with only a `create` action:
 
     nextId = (ids) ->
         if ids.length
@@ -102,7 +102,7 @@ And for updating a single object, using only an `update` action:
                 return Object.assign {}, state, action.value
         return state
 
-The overall reducer is a combination of these reducers, and the store is created from there.
+The overall reducer is a combination of these reducers, and the Store is created from there.
 
     combined_reducer = combineReducers
         page: create_object_reducer 'page'
@@ -113,7 +113,9 @@ The overall reducer is a combination of these reducers, and the store is created
 
     store = createStore combined_reducer, initial_state
 
-We will also want helper functions later to filter collections (working the same as an array filter) and attach items from one collection to another. They'll be built into this `Collection` object to be consistent with `Object.*` and `Array.*` methods.
+## Collection helpers
+
+We will want helper functions later to filter collections (working the same as an array filter) and attach items from one collection to another. They'll be built into this `Collection` object to be consistent with `Object.*` and `Array.*` methods.
 
     Collection =
         filter: (collection, fn) ->
@@ -149,11 +151,12 @@ These are simple stateless components for displaying lists and summaries of task
             }
         </div>
 
-The `page.name` attribute of the state is used by the App component to choose whether to show the tasks list page or a specific task page. To navigate we can dispatch a `page.update` action, changing the page name and other context.
+The `page.name` attribute of the state is used by the App component to choose whether to show the tasks list page or a specific task page. To navigate we can dispatch a `page.update` action, changing the page name and other context. We'll look more at this [in the next section](8-navigation.litcoffee).
 
     Task = ({task}) ->
         openTask = ->
             store.dispatch {type: 'page.update', value: {name: 'task', task_id: task.id}}
+
         <div className='task'>
             <h3 className='title'>
                 <span className='status'>{task.status}</span>
@@ -211,12 +214,16 @@ Components for creating a new task and comment are responsible for dispatching `
 
 ## Page Components
 
+Each page is passed the full app state by the App component, to avoid spreading logic around. Simpler pages need only pull state for the specific components.
+
     TasksPage = (state) ->
         <div id='tasks-page'>
             <h2>All tasks</h2>
             <Tasks tasks=state.tasks />
             <NewTask new_task=state.new_task />
         </div>
+
+A more involved page like the TaskPage can make use of the Collection helper functions, e.g. to filter comments from the full comments collection to those relevant to this task.
 
     TaskPage = (state) ->
         goBack = -> store.dispatch {type: 'page.update', value: {name: 'tasks'}}
@@ -258,7 +265,7 @@ Components for creating a new task and comment are responsible for dispatching `
 
 ## App Component
 
-Like before the App is the only stateful component, subscribing to state changes from the store, and passing all state values down to the pages.
+Again the App is the only stateful component, subscribing to state changes from the Store. The app uses the spread operator to pass all state values down to the pages.
 
     class App extends React.Component
         constructor: ->
