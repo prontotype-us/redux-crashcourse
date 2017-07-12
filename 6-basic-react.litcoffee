@@ -98,3 +98,7 @@ The App component is the only thing with state here &mdash; it subscribes to the
             </div>
 
     React.render <App />, document.body
+
+---
+
+**Next:** [Working with Normalized Collections](7-normalized-collections.litcoffee)

@@ -1,0 +1,57 @@
+*
+    margin: 0
+    padding: 0
+
+body
+    font: 15px/20px sans-serif
+    padding: 10px
+
+a
+    color: blue
+    cursor: pointer
+    text-decoration: underline
+
+    &:visited
+        color: purple
+
+.row
+    display: flex
+    flex-direction: row
+
+.col.one-third
+    width: 33.33%
+
+.col.two-thirds
+    width: 66.66%
+
+h2
+    margin: 20px 0 10px
+
+.task
+    padding: 10px
+    border: 1px solid #eee
+
+    .status
+        font-size: 0.8em
+        padding: 2px 5px
+        background: #eee
+        margin-right: 10px
+
+    .description
+        color: #999
+
+.comment
+    padding: 10px
+    border: 1px solid #eee
+
+    .user
+        font-weight: bold
+        margin-right: 10px
+
+form
+    background: #eee
+    padding: 10px
+
+    input, button
+        font: inherit
+        padding: 5px
