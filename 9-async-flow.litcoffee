@@ -11,7 +11,7 @@ This time we'll be building another (simpler) Twitter clone with loading and mor
     KefirBus = require 'kefir-bus'
     moment = require 'moment'
     React.__spread = Object.assign
-    {combineReducers, createStore} = require 'redux'
+    {combineReducers, createStore, applyMiddleware} = require 'redux'
 
 ## (Fake) loadable data
 
@@ -75,15 +75,17 @@ To fit the loading state in there's a slight departure from previous collections
     combined_reducer = combineReducers
         tweets: create_collection_reducer 'tweets'
 
-    store = createStore combined_reducer, initial_state
+## Middleware and the action stream
 
-## Action streams
-
-In order to support subscriptions to the actions themselves (rather than just resulting state changes, as `store.subscribe` offers) we'll pass all actions through a Kefir stream `actions$`. To dispatch an action from now on, we'll use `actions$.emit(action)`, and that stream will call the `store.dispatch(action)`. You'll see why in a second.
+In order to support subscriptions to the actions themselves (rather than just resulting state changes, as `store.subscribe` offers) we'll create a Kefir stream called `actions$` to pass actions through. A middleware function will be added to the Store to emit an action on that stream whenever `store.dispatch(action)` is called.
 
     actions$ = KefirBus()
-    actions$.onValue (action) ->
-        store.dispatch action
+
+    actions$_middleware = -> (next) -> (action) ->
+        actions$.emit action
+        next(action)
+
+    store = createStore combined_reducer, initial_state, applyMiddleware(actions$_middleware)
 
 Now with a stream of actions always available, we can trigger side effects when certain actions occur. For example, we'll have a reload button to reload the tweets. That button will dispatch the `tweets.load` action, but all that does is set the collection's loading state. The actual fetch will be triggered by a response to this action:
 
@@ -92,7 +94,7 @@ Now with a stream of actions always available, we can trigger side effects when 
             action.type == 'tweets.load'
         .onValue ->
             loadTweets(true).onValue (tweets) ->
-                actions$.emit {type: 'tweets.loaded', items: tweets}
+                store.dispatch {type: 'tweets.loaded', items: tweets}
 
 Similarly, when loading more tweets we'll trigger the `load_more` action and `loaded_more` after:
 
@@ -101,13 +103,13 @@ Similarly, when loading more tweets we'll trigger the `load_more` action and `lo
             action.type == 'tweets.load_more'
         .onValue ->
             loadTweets().onValue (tweets) ->
-                actions$.emit {type: 'tweets.loaded_more', items: tweets}
+                store.dispatch {type: 'tweets.loaded_more', items: tweets}
 
 ## Initial load
 
 To start things off we'll dispatch a `load` action:
 
-    actions$.emit {type: 'tweets.load'}
+    store.dispatch {type: 'tweets.load'}
 
 ## List and item components
 
@@ -138,8 +140,8 @@ Since there are no other pages in this demo, the main logic is built directly in
 
         render: ->
             console.log '[App.render]', @state
-            reload = -> actions$.emit {type: 'tweets.load'}
-            loadMore = -> actions$.emit {type: 'tweets.load_more'}
+            reload = -> store.dispatch {type: 'tweets.load'}
+            loadMore = -> store.dispatch {type: 'tweets.load_more'}
 
             <div id='app'>
                 <button onClick=reload>Reload</button>
