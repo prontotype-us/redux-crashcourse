@@ -1,4 +1,4 @@
-# 3. Higher-level Reducers
+# 4. Higher-level Reducers
 
 Consider the `counter_reducer` from the first two parts. It works nicely if our application has just one counter. But as soon as the client expands the scope of the counter app and we need another counter on the page, there's an big problem: the `inc` action will be ambiguous.
 
