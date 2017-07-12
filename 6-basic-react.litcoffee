@@ -21,12 +21,17 @@ This app will be a list of items which we can add and remove. Defining the initi
 
 We'll define an `items_reducer` to add and remove items. Instead of a real database which would manage its own IDs, here we'll accept the created item as a plain string and create the ID based on the largest existing ID.
 
+    nextId = (ids) ->
+        if ids.length
+            Math.max(ids...) + 1
+        else
+            0
+
     items_reducer = (state={}, action) ->
         switch action.type
             when 'items.create'
-                new_id = Math.max(Object.keys(state)...) + 1
                 created = {}
-                created[new_id] = action.item
+                created[nextId(Object.keys(state))] = action.item
                 return Object.assign {}, state, created
             when 'items.delete'
                 new_state = Object.assign {}, state
